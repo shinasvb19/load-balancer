@@ -8,16 +8,15 @@ const socket = io("http://localhost:3001");
 socket.on("connect", () => {
   console.log("you are connected with " + socket.id);
 });
-app.get("/:identity/:command", (req, res) => {
+app.post("/:identity/:command", (req, res) => {
   const { identity, command } = req.params;
-  socket.emit("send-request", identity, command);
-  const resultHandler = (status) => {
-    console.log(status);
-    res.status(200).send(status);
-    socket.off("result", resultHandler); // Remove the event listener
+  socket.emit("send-request", identity, command, req.body);
+  const resultHandler = (response) => {
+    console.log(response);
+    res.status(200).send(response);
+    socket.off("response", resultHandler); // Remove the event listener
   };
-
-  socket.on("result", resultHandler);
+  socket.on("response", resultHandler);
 });
 
 app.listen(3030);
