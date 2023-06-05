@@ -3,6 +3,7 @@ const cors = require("cors");
 const app = express();
 const axios = require("axios");
 app.use(cors());
+app.use(express.json());
 const { io } = require("socket.io-client");
 const socket = io("http://localhost:3001");
 socket.on("connect", () => {
@@ -10,6 +11,7 @@ socket.on("connect", () => {
 });
 app.post("/:identity/:command", (req, res) => {
   const { identity, command } = req.params;
+  console.log(req.body);
   socket.emit("send-request", identity, command, req.body);
   const resultHandler = (response) => {
     console.log(response);
